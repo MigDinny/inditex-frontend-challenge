@@ -1,0 +1,31 @@
+.price {
+    font-size: 1.25rem;
+}
+
+.search {
+}
+
+.container {
+}
+
+.top-bar {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style: none;
+}
+
+.img {
+    margin: 0 auto;
+}
+
+.hiddenImg {
+    width: 100%;
+}
+
+.imgLoader {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}

@@ -1,24 +1,38 @@
 import logo from "./logo.svg";
-import "./App.css";
+import classes from "./App.module.css";
+
+import "semantic-ui-css/semantic.min.css";
+
+import { Routes, Route, Navigate } from "react-router-dom";
+
+import Header from "./components/Layout/Header";
+import ProductList from "./components/pages/ProductList";
+import ProductDetails from "./components/pages/ProductDetails";
+import NotFound from "./components/pages/NotFound";
 
 function App() {
     return (
-        <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                    Edit <code>src/App.js</code> and save to reload.
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
-            </header>
-        </div>
+        <>
+            <Header></Header>
+            <main>
+                <Routes>
+                    <Route
+                        path="/"
+                        exact
+                        element={<Navigate to="/products" replace={true} />}
+                    />
+
+                    <Route path="/products" exact element={<ProductList />} />
+
+                    <Route
+                        path="/products/:productID"
+                        element={<ProductDetails />}
+                    />
+
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </main>
+        </>
     );
 }
 

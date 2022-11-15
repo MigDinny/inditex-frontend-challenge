@@ -1,0 +1,40 @@
+header {
+    background-color: darkgray;
+    height: 100px;
+    width: 100%;
+    margin: 0;
+    text-align: center;
+    font-size: 2rem;
+    box-shadow: 0 0 1px 1px rgb(153, 153, 153);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+    margin: 0 auto;
+    color: black;
+}
+
+.number-items {
+    float: right;
+    margin-right: 10px;
+    width: 50px;
+}
+
+.hidden-elem {
+    float: left;
+    margin-left: 10px;
+    display: hidden;
+    width: 50px;
+}
+
+.breadcrumb {
+    font-size: 1rem;
+    margin-top: 10px;
+    font-weight: 300;
+}
+
+.container {
+    text-align: center;
+}
