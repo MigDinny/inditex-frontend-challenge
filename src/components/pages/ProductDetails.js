@@ -1,6 +1,6 @@
 import classes from "./ProductDetails.module.css";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import useHTTP from "../../hooks/use-http";
 
 import {
@@ -12,11 +12,22 @@ import {
     Dropdown,
 } from "semantic-ui-react";
 
-const ProductDetails = () => {
+const ProductDetails = (props) => {
+    // hooks and states
     let { productID } = useParams();
     const { isLoading, error: requestError, sendRequest } = useHTTP();
+    const {
+        isLoading: isAddToCartLoading,
+        error: addToCartError,
+        sendRequest: sendAddToCart,
+    } = useHTTP();
     const [product, setProduct] = useState(null);
+    const [colorNotSelected, setColorNotSelected] = useState(false);
+    const [storageNotSelected, setStorageNotSelected] = useState(false);
+    const colorRef = useRef();
+    const storageRef = useRef();
 
+    // lifecycle hooks
     useEffect(() => {
         const updateProduct = (data) => {
             let temp = {
@@ -53,6 +64,48 @@ const ProductDetails = () => {
 
         sendRequest(reqConfig, updateProduct);
     }, [sendRequest, productID]);
+
+    // handlers
+    const addHandler = () => {
+        if (colorRef.current.state.value.length === 0)
+            setColorNotSelected(true);
+
+        if (storageRef.current.state.value.length === 0)
+            setStorageNotSelected(true);
+
+        if (
+            storageRef.current.state.value.length === 0 ||
+            colorRef.current.state.value.length === 0
+        )
+            return;
+
+        const reqBody = {
+            id: productID,
+            colorCode:
+                product.colorsAvailable[colorRef.current.state.selectedIndex]
+                    .key,
+            storageCode:
+                product.storageAvailable[storageRef.current.state.selectedIndex]
+                    .key,
+        };
+
+        const reqConfig = {
+            url: "https://front-test-api.herokuapp.com/api/cart",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Connection: "keep-alive",
+            },
+            body: reqBody,
+        };
+
+        const updateCartNumber = (data) => {
+            props.onCartNumberChange(data.count);
+        };
+
+        // send request to add to cart
+        sendAddToCart(reqConfig, updateCartNumber);
+    };
 
     return (
         <div className={classes.container}>
@@ -136,6 +189,10 @@ const ProductDetails = () => {
                                 <br></br>
                                 <div className={classes.actions}>
                                     <Dropdown
+                                        className={
+                                            storageNotSelected &&
+                                            classes.selectError
+                                        }
                                         placeholder="Select Storage"
                                         fluid
                                         selection
@@ -147,9 +204,17 @@ const ProductDetails = () => {
                                                       .value
                                                 : ""
                                         }
+                                        ref={storageRef}
+                                        onChange={() => {
+                                            setStorageNotSelected(false);
+                                        }}
                                     />
                                     <br></br>
                                     <Dropdown
+                                        className={
+                                            colorNotSelected &&
+                                            classes.selectError
+                                        }
                                         placeholder="Select Color"
                                         fluid
                                         selection
@@ -160,9 +225,16 @@ const ProductDetails = () => {
                                                       .value
                                                 : ""
                                         }
+                                        ref={colorRef}
+                                        onChange={() => {
+                                            setColorNotSelected(false);
+                                        }}
                                     />
                                     <br></br>
-                                    <Button animated="vertical">
+                                    <Button
+                                        animated="vertical"
+                                        onClick={addHandler}
+                                    >
                                         <Button.Content hidden>
                                             Add
                                         </Button.Content>

@@ -8,6 +8,8 @@ import useHTTP from "../../hooks/use-http";
 const ProductList = () => {
     // Hooks and States
     const [productList, setProductList] = useState([]);
+    const [filteredProductList, setFilteredProductList] = useState([]);
+    const [searchInput, setSearchInput] = useState("");
     const { isLoading, error: requestError, sendRequest } = useHTTP();
     const { width } = useWindowDimensions();
     const navigate = useNavigate();
@@ -16,6 +18,7 @@ const ProductList = () => {
     useEffect(() => {
         const updateProductList = (data) => {
             setProductList(data);
+            setFilteredProductList(data);
         };
 
         const reqConfig = {
@@ -25,13 +28,32 @@ const ProductList = () => {
         sendRequest(reqConfig, updateProductList);
     }, [sendRequest]);
 
+    useEffect(() => {
+        if (productList.length === 0) return;
+
+        const filtered = productList.filter(
+            (p) =>
+                p.model.toLowerCase().includes(searchInput.toLowerCase()) ||
+                p.brand.toLowerCase().includes(searchInput.toLowerCase())
+        );
+
+        const timer = setTimeout(() => {
+            setFilteredProductList(filtered);
+            console.log(filtered);
+        }, 500);
+
+        return () => {
+            clearTimeout(timer); // cleanup function. clear timout in case useEffect gets called again within 500ms
+        };
+    }, [searchInput, productList]);
+
     // handlers
     const cardClickHandler = (productID) => {
         navigate("/products/" + productID);
     };
 
     // content variables
-    let list_content = productList.map((p) => (
+    let list_content = filteredProductList.map((p) => (
         <Card
             key={p.id}
             onClick={() => {
@@ -64,6 +86,9 @@ const ProductList = () => {
                     className={classes.search}
                     icon="search"
                     placeholder="Search..."
+                    onChange={(e) => {
+                        setSearchInput(e.currentTarget.value);
+                    }}
                 />
             </div>
             {isLoading && (

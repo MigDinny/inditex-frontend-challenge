@@ -1,6 +1,6 @@
 import logo from "./logo.svg";
-import classes from "./App.module.css";
-
+import classes from "./App.module.css"; // keep this import because it's being used
+import { useState } from "react";
 import "semantic-ui-css/semantic.min.css";
 
 import { Routes, Route, Navigate } from "react-router-dom";
@@ -11,9 +11,11 @@ import ProductDetails from "./components/pages/ProductDetails";
 import NotFound from "./components/pages/NotFound";
 
 function App() {
+    const [cartNumber, setCartNumber] = useState(0);
+
     return (
         <>
-            <Header></Header>
+            <Header cartNumber={cartNumber}></Header>
             <main>
                 <Routes>
                     <Route
@@ -26,7 +28,11 @@ function App() {
 
                     <Route
                         path="/products/:productID"
-                        element={<ProductDetails />}
+                        element={
+                            <ProductDetails
+                                onCartNumberChange={setCartNumber}
+                            />
+                        }
                     />
 
                     <Route path="*" element={<NotFound />} />

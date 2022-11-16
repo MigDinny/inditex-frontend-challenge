@@ -26,6 +26,9 @@
     margin: 0 auto;
 }
 
-.errorMessage {
-    margin: 0 auto;
+.selectError {
+    /*color: red !important;*/
+    background-color: rgb(252, 243, 243) !important;
+    /*border: 1px solid red !important ;*/
+    box-shadow: 0 0 3px 1px rgba(255, 0, 0, 0.6) !important;
 }

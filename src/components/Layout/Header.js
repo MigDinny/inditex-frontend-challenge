@@ -1,7 +1,7 @@
 import classes from "./Header.module.css";
 import { Link } from "react-router-dom";
 
-const Header = () => {
+const Header = (props) => {
     return (
         <div className={classes.container}>
             <header>
@@ -9,7 +9,9 @@ const Header = () => {
                 <span className={classes.title}>
                     <Link to="/">Mobile Shop</Link>
                 </span>
-                <span className={classes["number-items"]}>3</span>
+                <span className={classes["number-items"]}>
+                    {props.cartNumber}
+                </span>
             </header>
 
             <p className={classes.breadcrumb}>Home / Products</p>
