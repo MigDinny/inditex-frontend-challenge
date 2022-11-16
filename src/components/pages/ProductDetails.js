@@ -1,6 +1,8 @@
 import classes from "./ProductDetails.module.css";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useHTTP from "../../hooks/use-http";
+
 import {
     Grid,
     Image,
@@ -10,66 +12,65 @@ import {
     Dropdown,
 } from "semantic-ui-react";
 
-const colorsAvailable = [
-    {
-        key: "white",
-        text: "White",
-        value: "white",
-    },
-    {
-        key: "red",
-        text: "Red",
-        value: "red",
-    },
-    {
-        key: "orange",
-        text: "Orange",
-        value: "orange",
-    },
-];
-
-const storageAvailable = [
-    { key: "128gb", text: "128gb", value: "128gb" },
-    { key: "256gb", text: "256gb", value: "256gb" },
-    { key: "512gb", text: "512gb", value: "512gb" },
-];
-
-const productObject = {
-    id: "p1",
-    imgSrc: "https://react.semantic-ui.com/images/avatar/large/matthew.png",
-    brand: "Asus",
-    model: "a541u",
-    price: "159.99",
-    ram: "4gb",
-    os: "windows 10",
-    resolution: "1920x1080",
-    battery: "5400mAh",
-    camera: "10 mpx",
-    size: '15.6"',
-    weight: "1.3kg",
-};
-
 const ProductDetails = () => {
-    const [loading, setLoading] = useState(true);
     let { productID } = useParams();
+    const { isLoading, error: requestError, sendRequest } = useHTTP();
+    const [product, setProduct] = useState(null);
+
+    useEffect(() => {
+        const updateProduct = (data) => {
+            let temp = {
+                id: data.id,
+                imgUrl: data.imgUrl,
+                brand: data.brand,
+                model: data.model,
+                price: data.price,
+                ram: data.ram,
+                os: data.os,
+                resolution: data.displaySize,
+                battery: data.battery,
+                camera: data.primaryCamera[0],
+                size: data.displayResolution,
+                weight: data.weight,
+                colorsAvailable: data.options.colors.map((c) => ({
+                    key: c.code,
+                    value: c.name,
+                    text: c.name,
+                })),
+                storageAvailable: data.options.storages.map((s) => ({
+                    key: s.code,
+                    value: s.name,
+                    text: s.name,
+                })),
+            };
+            setProduct(temp);
+        };
+
+        const reqConfig = {
+            url:
+                "https://front-test-api.herokuapp.com/api/product/" + productID,
+        };
+
+        sendRequest(reqConfig, updateProduct);
+    }, [sendRequest, productID]);
 
     return (
         <div className={classes.container}>
             <Grid columns={2} stackable textAlign="center">
                 <Grid.Row>
                     <Grid.Column>
-                        {loading && (
+                        {isLoading && (
                             <Placeholder>
                                 <Placeholder.Image square />
                             </Placeholder>
                         )}
 
-                        {!loading && (
-                            <Image src="https://react.semantic-ui.com/images/avatar/large/matthew.png" />
+                        {!isLoading && product != null && (
+                            <Image size="medium" src={product.imgUrl} />
                         )}
                     </Grid.Column>
                     <Grid.Column>
-                        {loading && (
+                        {isLoading && product == null && (
                             <>
                                 <Placeholder>
                                     <Placeholder.Paragraph>
@@ -100,32 +101,65 @@ const ProductDetails = () => {
                             </>
                         )}
 
-                        {!loading && (
+                        {!isLoading && product != null && (
                             <>
                                 <div className={classes.description}>
                                     <h4>Description</h4>
                                     <p>
-                                        <b>Brand:</b> {productObject.brand}
+                                        <b>Brand:</b> {product.brand}
                                     </p>
                                     <p>
-                                        <b>Model:</b> {productObject.model}
+                                        <b>Model:</b> {product.model}
+                                    </p>
+                                    <p>
+                                        <b>RAM:</b> {product.ram}
+                                    </p>
+                                    <p>
+                                        <b>OS:</b> {product.os}
+                                    </p>
+                                    <p>
+                                        <b>Resolution:</b> {product.resolution}
+                                    </p>
+                                    <p>
+                                        <b>Battery:</b> {product.battery}
+                                    </p>
+                                    <p>
+                                        <b>Camera:</b> {product.camera}
+                                    </p>
+                                    <p>
+                                        <b>Size:</b> {product.size}
+                                    </p>
+                                    <p>
+                                        <b>Weight:</b> {product.weight}g
                                     </p>
                                 </div>
+                                <br></br>
                                 <div className={classes.actions}>
                                     <Dropdown
                                         placeholder="Select Storage"
                                         fluid
                                         selection
-                                        options={storageAvailable}
-                                        defaultValue="128gb"
+                                        options={product.storageAvailable}
+                                        defaultValue={
+                                            product.storageAvailable.length ===
+                                            1
+                                                ? product.storageAvailable[0]
+                                                      .value
+                                                : ""
+                                        }
                                     />
                                     <br></br>
                                     <Dropdown
                                         placeholder="Select Color"
                                         fluid
                                         selection
-                                        options={colorsAvailable}
-                                        defaultValue="red"
+                                        options={product.colorsAvailable}
+                                        defaultValue={
+                                            product.colorsAvailable.length === 1
+                                                ? product.colorsAvailable[0]
+                                                      .value
+                                                : ""
+                                        }
                                     />
                                     <br></br>
                                     <Button animated="vertical">
