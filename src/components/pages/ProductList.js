@@ -39,7 +39,6 @@ const ProductList = () => {
 
         const timer = setTimeout(() => {
             setFilteredProductList(filtered);
-            console.log(filtered);
         }, 500);
 
         return () => {
@@ -60,7 +59,7 @@ const ProductList = () => {
                 cardClickHandler(p.id);
             }}
         >
-            <Image dimmer className={classes.img} src={p.imgUrl} size="small" />
+            <Image className={classes.img} src={p.imgUrl} size="small" />
 
             <Card.Content>
                 <Card.Header>{p.brand}</Card.Header>

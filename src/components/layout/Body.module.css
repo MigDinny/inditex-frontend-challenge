@@ -1,0 +1,10 @@
+.container {
+    padding: 20px;
+}
+
+.breadcrumb {
+    font-size: 1rem;
+    margin-top: 10px;
+    font-weight: 300;
+    text-align: center;
+}

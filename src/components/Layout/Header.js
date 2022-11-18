@@ -13,8 +13,6 @@ const Header = (props) => {
                     {props.cartNumber}
                 </span>
             </header>
-
-            <p className={classes.breadcrumb}>Home / Products</p>
         </div>
     );
 };
