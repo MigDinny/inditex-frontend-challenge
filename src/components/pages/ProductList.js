@@ -4,11 +4,19 @@ import { Card, Image, Input, Loader, Dimmer, Message } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useHTTP from "../../hooks/use-http";
+import {
+    saveProductListToLocalStorage,
+    getProductListFromLocalStorage,
+} from "../../utils/localStorage";
 
 const ProductList = () => {
     // Hooks and States
-    const [productList, setProductList] = useState([]);
-    const [filteredProductList, setFilteredProductList] = useState([]);
+    const [productList, setProductList] = useState(
+        getProductListFromLocalStorage()
+    );
+    const [filteredProductList, setFilteredProductList] = useState(
+        getProductListFromLocalStorage()
+    );
     const [searchInput, setSearchInput] = useState("");
     const { isLoading, error: requestError, sendRequest } = useHTTP();
     const { width } = useWindowDimensions();
@@ -16,20 +24,25 @@ const ProductList = () => {
 
     // lifecycle hooks
     useEffect(() => {
+        if (productList.length > 0) return; // this ensures that if products are being fetched from local storage, no additional http fetch is made
+
         const updateProductList = (data) => {
             setProductList(data);
             setFilteredProductList(data);
+            saveProductListToLocalStorage(data);
         };
 
         const reqConfig = {
             url: "https://front-test-api.herokuapp.com/api/product",
         };
 
+        console.log("Fetching PRODUCT LIST from REST API...");
+
         sendRequest(reqConfig, updateProductList);
-    }, [sendRequest]);
+    }, [sendRequest, productList.length]);
 
     useEffect(() => {
-        if (productList.length === 0) return;
+        if (productList.length === 0 || searchInput.length === 0) return;
 
         const filtered = productList.filter(
             (p) =>

@@ -4,6 +4,10 @@ import { useEffect, useState, useRef } from "react";
 import useHTTP from "../../hooks/use-http";
 
 import {
+    getProductFromLocalStorage,
+    saveProductToLocalStorage,
+} from "../../utils/localStorage";
+import {
     Grid,
     Image,
     Placeholder,
@@ -21,7 +25,9 @@ const ProductDetails = (props) => {
         error: addToCartError,
         sendRequest: sendAddToCart,
     } = useHTTP();
-    const [product, setProduct] = useState(null);
+    const [product, setProduct] = useState(
+        getProductFromLocalStorage(productID)
+    );
     const [colorNotSelected, setColorNotSelected] = useState(false);
     const [storageNotSelected, setStorageNotSelected] = useState(false);
     const colorRef = useRef();
@@ -29,6 +35,8 @@ const ProductDetails = (props) => {
 
     // lifecycle hooks
     useEffect(() => {
+        if (product !== null && product !== undefined) return;
+
         const updateProduct = (data) => {
             let temp = {
                 id: data.id,
@@ -55,6 +63,7 @@ const ProductDetails = (props) => {
                 })),
             };
             setProduct(temp);
+            saveProductToLocalStorage(temp);
         };
 
         const reqConfig = {
@@ -62,8 +71,10 @@ const ProductDetails = (props) => {
                 "https://front-test-api.herokuapp.com/api/product/" + productID,
         };
 
+        console.log("Fetching product " + productID + " from REST API...");
+
         sendRequest(reqConfig, updateProduct);
-    }, [sendRequest, productID]);
+    }, [sendRequest, productID, product]);
 
     // handlers
     const addHandler = () => {
