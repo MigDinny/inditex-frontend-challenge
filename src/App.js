@@ -31,7 +31,12 @@ function App() {
                         path="/products"
                         exact
                         element={
-                            <Body>
+                            <Body
+                                breadcrumb={[
+                                    ["Home", "/"],
+                                    ["Product List", "/products"],
+                                ]}
+                            >
                                 <ProductList />
                             </Body>
                         }
@@ -40,7 +45,13 @@ function App() {
                     <Route
                         path="/products/:productID"
                         element={
-                            <Body>
+                            <Body
+                                breadcrumb={[
+                                    ["Home", "/"],
+                                    ["Product List", "/products"],
+                                    ["Smartphone", ""],
+                                ]}
+                            >
                                 <ProductDetails
                                     onCartNumberChange={setCartNumber}
                                 />
