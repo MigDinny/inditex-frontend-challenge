@@ -14,9 +14,7 @@ const ProductList = () => {
     const [productList, setProductList] = useState(
         getProductListFromLocalStorage()
     );
-    const [filteredProductList, setFilteredProductList] = useState(
-        getProductListFromLocalStorage()
-    );
+    const [filteredProductList, setFilteredProductList] = useState([]);
     const [searchInput, setSearchInput] = useState("");
     const { isLoading, error: requestError, sendRequest } = useHTTP();
     const { width } = useWindowDimensions();
@@ -42,13 +40,17 @@ const ProductList = () => {
     }, [sendRequest, productList.length]);
 
     useEffect(() => {
-        if (productList.length === 0 || searchInput.length === 0) return;
+        if (productList.length === 0) return;
 
-        const filtered = productList.filter(
-            (p) =>
-                p.model.toLowerCase().includes(searchInput.toLowerCase()) ||
-                p.brand.toLowerCase().includes(searchInput.toLowerCase())
-        );
+        let filtered;
+
+        if (searchInput.length === 0) filtered = [...productList];
+        else
+            filtered = productList.filter(
+                (p) =>
+                    p.model.toLowerCase().includes(searchInput.toLowerCase()) ||
+                    p.brand.toLowerCase().includes(searchInput.toLowerCase())
+            );
 
         const timer = setTimeout(() => {
             setFilteredProductList(filtered);
