@@ -1,11 +1,11 @@
 header {
-    background-color: darkgray;
+    background-color: #f45b69;
     height: 100px;
     width: 100%;
     margin: 0;
     text-align: center;
     font-size: 2rem;
-    box-shadow: 0 0 1px 1px rgb(153, 153, 153);
+    box-shadow: 0 0 1px 1px #f45b69;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -13,20 +13,35 @@ header {
 
 .title {
     margin: 0 auto;
-    color: black;
+}
+
+.title a {
+    color: white;
+}
+
+.title a:hover {
+    color: #52489c;
 }
 
 .number-items {
+    color: white;
     float: right;
+    margin-right: 30px;
+    width: auto;
+    background-color: #dd3543;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.number {
     margin-right: 10px;
-    width: 50px;
 }
 
 .hidden-elem {
     float: left;
     margin-left: 10px;
     display: hidden;
-    width: 50px;
+    width: 92.78px;
 }
 
 .container {

@@ -1,5 +1,6 @@
 import classes from "./Header.module.css";
 import { Link } from "react-router-dom";
+import { Icon } from "semantic-ui-react";
 
 const Header = (props) => {
     return (
@@ -9,9 +10,10 @@ const Header = (props) => {
                 <span className={classes.title}>
                     <Link to="/">Mobile Shop</Link>
                 </span>
-                <span className={classes["number-items"]}>
-                    {props.cartNumber}
-                </span>
+                <div className={classes["number-items"]}>
+                    <span className={classes.number}>{props.cartNumber}</span>
+                    <Icon name="shopping cart" />
+                </div>
             </header>
         </div>
     );
